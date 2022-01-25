@@ -1,10 +1,19 @@
+# This module is modified from ChemDataExtractor battery article code to extract bandgap information It uses
+# rule-based extraction
+# reference: Huang, S., & Cole, J. M. (2020). A database of battery materials auto-generated
+# using ChemDataExtractor. Scientific Data 2020 7:1, 7(1), 1–13. https://doi.org/10.1038/s41597-020-00602-2
+
+
+# __Author__ = Kun Lu
+# Date: Summer 2021
+
+
 from chemdataextractor import Document
 from chemdataextractor.doc import Heading, Paragraph, Title
 from chemdataextractor.model import BaseModel, StringType, ListType, ModelType
 from chemdataextractor.model import Compound
 from lxml import etree
-from chemdataextractor.parse import R, I, W, T, Optional, merge, join, Any, OneOrMore, Not, ZeroOrMore, SkipTo, FollowedBy
-#from chemdataextractor.elements import I, R, W, T, ZeroOrMore, Optional, Not, Group, End, Start, OneOrMore, Any, FollowedBy
+from chemdataextractor.parse import R, I, W, T, Optional, merge, join, Any, OneOrMore, Not, ZeroOrMore, SkipTo
 from chemdataextractor.parse.base import BaseParser
 from chemdataextractor.parse.common import lbrct, dt, rbrct, comma
 from chemdataextractor.utils import first
@@ -12,12 +21,20 @@ from chemdataextractor.parse.cem import cem, chemical_label, lenient_chemical_la
     ChemicalLabelParser
 
 
+# define Band gap property model
+class BandGap(BaseModel):
+    raw_value = StringType()
+    raw_units = StringType(contextual=True)
+    specifier = StringType(contextual=True)
+
+
+# add bandgap model to Compound model
+Compound.band_gaps = ListType(ModelType(BandGap))
 
 # define grammars for parser
 delim = R(r'^[:;\.,]$')
 # define unit grammar, eV
-units = (R('^eV$') + Not(I('/') | I('K-1') | I('K')))('units').add_action(join)
-#units = R('^eV$') | R(r'\d+.\d+eV$')('units').add_action(merge)
+units = (R('^eV$')('units')).add_action(join)
 
 # define various value formatting
 joined_range = R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?[\-––-−~∼˜]\d+(\.\d+)?(\(\d\))?$')('value').add_action(join)
@@ -25,59 +42,19 @@ spaced_range = (R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$') + Optional(units).hide
     r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$') | R(r'^[\+\-–−]\d+(\.\d+)?(\(\d\))?$')))('value').add_action(merge)
 to_range = (ZeroOrMore(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$') + Optional(units).hide()) +
             Optional(I('to')) + R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$'))('value').add_action(join)
-up_to_range = (ZeroOrMore(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$') + Optional(units).hide()) + Optional(I('up')) +
-            Optional(I('to')) + R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$'))('value').add_action(join)
-# and_range = (Optional(I('between')) +
-#              (ZeroOrMore(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$') |
-#              ZeroOrMore((Optional(R(r'[\+\-–−]?\d+$')) + Optional(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$')) + R('×') + I('10') + R('−') + R(r'\d+')))) +
-#              Optional(units).hide() +
-#              Optional(lbrct + ZeroOrMore(R(r'^[^\)]+$')) + rbrct).hide() + Optional(comma)) +
-#              Optional(I('and') | comma) + (R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$') | ZeroOrMore((Optional(R(r'[\+\-–−]?\d+$')) + Optional(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$')) + R('×') + I('10') + R('−') + R(r'\d+')))))('value') .add_action(join)
 and_range = (Optional(I('between')) +
-             (ZeroOrMore(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$') +
-             Optional(units).hide() +
+             ZeroOrMore(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$') + Optional(units).hide() +
              Optional(lbrct + ZeroOrMore(R(r'^[^\)]+$')) + rbrct).hide() + Optional(comma)) +
-             Optional(I('and') | comma) + R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$'))).add_action(join)
-
-exp_and_exp_range = ((Optional(I('between') | I('of') | I('from'))).hide() +
-             (Optional(R(r'[\+\-–−]?\d+$') + Optional(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$')) + R('×') + R(r'^[0-9]') + R('−') + R(r'\d+')) +
-             Optional(units).hide() +
-             Optional(lbrct + ZeroOrMore(R(r'^[^\)]+$')) + rbrct).hide() + Optional(comma)) +
-             Optional(I('and') | comma) +
-             (Optional(R(r'[\+\-–−]?\d+$')) + Optional(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$')) + R('×') + R(r'^[0-9]') + R('−') + R(r'\d+')) | Optional(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$'))
-               ).add_action(join)
-
-exp_and_num_range = (Optional(I('between') | I('from') | I('of')).hide() +
-             (Optional(R(r'[\+\-–−]?\d+$') + Optional(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$')) + R('×') + R(r'^[0-9]') + Optional(R('−')) + R(r'\d+')) +
-             Optional(units).hide() +
-             Optional(lbrct + ZeroOrMore(R(r'^[^\)]+$')) + rbrct).hide() + Optional(comma)) +
-             Optional(I('and') | comma) +
-             Optional(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$') | R(r'[\+\-–−]?\d+$'))
-              ).add_action(join)
-
-
-# exp = (Optional(R(r'[\+\-–−]?\d+$')) +
-#        Optional(R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$')) + R('×') + I('10') +
-#        R('−') + R(r'\d+')).add_action(join)
-
-exp = (Optional(R(r'[\+\-–−]?\d+$') | R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$')) +
-       R('×') + R(r'^[0-9]') +
-       Optional(R('−')) + R(r'\d+')).add_action(join)
-
-
-range = (Optional(R(r'^[\-–−]$')) + (and_range | to_range | up_to_range | spaced_range | joined_range | exp_and_exp_range | exp_and_num_range)).add_action(merge)
+             Optional(I('and') | comma) + R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$'))('value').add_action(join)
+range = (Optional(R(r'^[\-–−]$')) + (and_range | to_range | spaced_range | joined_range)).add_action(merge)
 value = (Optional(R(r'^[\-–−]$')) +
          Optional(R(r'^[~∼˜\<\>\≤\≥]$')) +
          Optional(R(r'^[\-\–\–\−±∓⨤⨦±]$')) +
          R(r'^[\+\-–−]?\d+(\.\d+)?(\(\d\))?$')).add_action(join)
 ordinal = T('JJ').add_action(join)
+power = (Optional((range | value) + R('×')) + (R('10') + W('−') + R(r'\d') | R(r'^10[\-–−]?\d+$'))).add_action(join)
+e_volt = (power | range | value | ordinal)('value')  # match ev values
 
-#exp_range = (exp + Optional(units).hide() +
-#             R('and') +
-#             exp)('value')
-power = (Optional((range | value) + R('×')) + (R(r'\d+') + W('−') + R(r'\d+') | R(r'^d+[\-–−]?\d+$'))).add_action(join)
-e_volt = (exp | range | value | ordinal | power)('value')  # match ev values
-#e_volt = (exp_range)('value')
 # chemical entity mentions
 cem_prefix = (Optional(T('DT')).hide() +
               (cem + Optional(I('doped') + I('with') + cem))('cem') + Optional(I('thin')) +
@@ -85,9 +62,6 @@ cem_prefix = (Optional(T('DT')).hide() +
 # multiple chemical entities
 multi_cem = ZeroOrMore(cem_prefix + Optional(comma).hide()) + Optional(I('and') | comma).hide() + cem_prefix
 
-
-#
-#exp_range = (ZeroOrMore(I('from') | I('between')) + Optional(exp + Optional(units)) + W('and') + (exp + units))
 # band gap specifier
 bg_specifier = (Optional(I('direct') | I('indirect')) +
                 Optional(I('electronic') | I('optical')) +
@@ -121,9 +95,6 @@ evolt_and_units = (
         Optional(rbrct).hide())('evolt')
 evolt_specifier_and_value = Optional(prefix) + (Optional(delim).hide() + Optional(
     lbrct | I('[')).hide() + e_volt + units + Optional(rbrct | I(']')).hide())('evolt')
-#evolt_scientific_writing = (exp + Optional(units).hide() +
-#             I('and') +
-#             exp + units)('evolt')
 
 # define 5 root patterns for evolt_phrase
 prefix_cem_value = (
@@ -149,8 +120,7 @@ cem_prefix_value = ((multi_cem | cem_prefix | lenient_chemical_label)
                    I('are') | I('remains') | I('maintains') | I('delivered') | I('provided') | I('undergo') |
                    I('undergoes') | I('has') | I('have') | I('having') | I('determined') | I('with') | I('where') |
                    I('orders') | I('were') | (I('is') + Optional(I('classified') + I('as')))).hide()
-
-        + Optional((I('reported') | I('up') + I('to') + I('have')) | I('at') | I('with')).hide()
+        + Optional((I('reported') + I('to') + I('have')) | I('at') | I('with')).hide()
         + Optional(prefix)
         + Optional(lbrct).hide() + (evolt_specifier_and_value | evolt_and_units) + Optional(rbrct).hide()
         + Optional(I('can') + I('be') + I('achieved'))
@@ -161,12 +131,12 @@ prefix_value_cem = (
         prefix +
         Optional(I('is') | I('were') | I('was') | I('are')).hide() +
         SkipTo((evolt_specifier_and_value | evolt_and_units)) +
-        (evolt_specifier_and_value | evolt_and_units ) +
+        (evolt_specifier_and_value | evolt_and_units) +
         Optional(
             Optional(I('has') + I('been') + I('found')) +
             Optional(I('is') | I('were') | I('was') | I('are')) +
             Optional(I('observed') | I('determined') | I('measured') | I('calculated') | I('reported'))).hide() +
-        Optional(evolt_specifier_and_value | evolt_and_units ) +
+        Optional(evolt_specifier_and_value | evolt_and_units) +
         Optional(I('in') | I('for') | I('of')).hide() +
         Optional(I('the')).hide() +
         Optional(R('^[:;,]$')).hide() +
@@ -177,7 +147,7 @@ prefix_value_cem = (
         Optional(rbrct).hide())('evolt_phrase')
 
 value_prefix_cem = (Optional(I('of')) +
-                    (evolt_specifier_and_value | evolt_and_units ) +
+                    (evolt_specifier_and_value | evolt_and_units) +
                     Optional(delim).hide() +
                     Optional(I('which') | I('that')).hide() +
                     Optional(I('has') +
@@ -216,8 +186,6 @@ mcem_cem_prefix_value = ((multi_cem | cem_prefix | lenient_chemical_label).hide(
                          (multi_cem | cem_prefix | lenient_chemical_label) + SkipTo(prefix) + prefix +
                          (evolt_specifier_and_value | evolt_and_units)
                          )('evolt_phrase')
-
-
 # TODO: cem made from/originated from
 
 bg = (mcem_cem_prefix_value
@@ -225,5 +193,62 @@ bg = (mcem_cem_prefix_value
          | cem_value_prefix
          | cem_prefix_value
          | prefix_cem_value
-         | prefix_value_cem
+         | prefix_value_cem)
+
+
+# define band gap parser
+class BandgapParser(BaseParser):
+    root = bg
+
+    def interpret(self, result, start, end):
+        #print(etree.tostring(result))
+        # print(result.tag)
+        raw_value = first(result.xpath('./evolt/value/text()'))
+        raw_units = first(result.xpath('./evolt/units/text()'))
+        try:
+            specifier = ' '.join(
+                [i for i in (first(result.xpath('./specifier'))).itertext()])
+        except BaseException:
+            specifier = ''
+
+        band_gap = Compound(
+            band_gaps=[
+                BandGap(
+                    raw_value=raw_value,
+                    raw_units=raw_units,
+                    specifier=specifier,
+                )
+            ]
         )
+        # find chemical entity mentions in this matched result
+        cem_el = first(result.xpath('./cem'))
+        if cem_el is not None:
+            band_gap.names = cem_el.xpath('./cem/name/text()')
+            band_gap.labels = cem_el.xpath('./cem/label/text()')
+        yield band_gap
+
+
+Paragraph.parsers = [CompoundParser(), BandgapParser()]
+
+
+d = Document(
+    Heading(u'''Thickness dependence of structural, optical and luminescence properties of BaTiO3 thin films prepared 
+    by RF magnetron sputtering'''),
+    Paragraph(u'''BaTiO 3 thin films were deposited onto quartz substrates by RF magnetron sputtering. X-ray 
+    diffraction pattern showed the formation of BT thin films with a tetragonal structure with orientations along (
+    101) plane. Average crystallite size increased from 12.52 to 14.87 nm as the film thickness increased from 207 to 
+    554 nm. With the increase in film thickness, the structural disorder decreases and the crystalline quality of the 
+    films gradually improved. The film exhibited good adherence to the substrate and are crack free. X-ray 
+    photoelectron spectroscopy revealed the presence of barium, titanium and oxygen in BT film. An average 
+    transmittance of >80 % was observed for all the films. This high transmittance BT films in the visible region is 
+    suitable for various electro-optic applications. The transmittance spectra showed high UV-shielding properties. 
+    Optical band gap was found to decrease from 4.55 to 3.70 eV with increase of film thickness, whereas the 
+    refractive index was found to increase. The refractive index of the BT films can be tuned between 2.11 and 2.21 
+    at 550 nm. The real and imaginary dielectric constants with increase in film thickness were investigated. The low 
+    dissipation factor of BT thin films makes it a promising material for frequency agile applications. The emission 
+    spectra of BT thin films consist of near band edge excitonic UV emission and defect related emission in the 
+    visible range. The PL emission bands in UV and visible region of BT thin films make them suitable for 
+    electro-optic devices and light emitters.''')
+)
+
+print(d.records.serialize())

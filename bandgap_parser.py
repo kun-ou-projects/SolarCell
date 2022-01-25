@@ -23,7 +23,7 @@ class BandgapParser(BaseParser):
     root = bg
 
     def interpret(self, result, start, end):
-        print(etree.tostring(result))
+        #print(etree.tostring(result))
         #print(result.xpath('./specifier/text()'))
         raw_value = first(result.xpath('./evolt/value/text()'))
         raw_units = first(result.xpath('./evolt/units/text()'))

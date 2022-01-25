@@ -1,0 +1,2 @@
+added a new grammar in the parser_grammar.py file to parse scientific writing as power does not work
+corrected the problem with POS tagger by changing the POS tagger in the text.py file

@@ -1,6 +1,6 @@
 from chemdataextractor import Document
 from chemdataextractor.doc import Heading, Paragraph, Title
-from chemdataextractor.model import BaseModel, StringType, ListType, ModelType
+from chemdataextractor.model import BaseModel, FloatType, StringType, ListType, ModelType
 from chemdataextractor.model import Compound
 from lxml import etree
 from chemdataextractor.parse import R, I, W, T, Optional, merge, join, Any, OneOrMore, Not, ZeroOrMore, SkipTo
@@ -16,7 +16,7 @@ class BandGap(BaseModel):
     raw_value = StringType()
     raw_units = StringType(contextual=True)
     specifier = StringType(contextual=True)
-    understanding = StringType(contextual=True)
+    #understanding = StringType(contextual=True)
 
 
 # add bandgap model to Compound model

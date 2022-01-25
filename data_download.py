@@ -168,7 +168,7 @@ def download_sample(n):
 
 
 if __name__ == '__main__':
-    download_sample(n=20000)
+    download_sample(n=100)
     print("--- %s seconds ---" % (time.time() - start_time))
 
 
