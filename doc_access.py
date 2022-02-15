@@ -56,7 +56,7 @@ df['abstract'] = paragraph
 df['info_extracted'] = ie
 
 
-df.to_csv("data/manual_evaluation_ie.csv")
+df.to_csv("data/manual_eval_with_context_ie.csv")
 # d1 = Document(
 #     #Heading(u'''Relation between interface states and temperature behavior of the barrier height of silver contacts on clean cleaved n-type silicon '''),
 #     Paragraph(u'''The temperature dependence of the indirect band gap for each direction
