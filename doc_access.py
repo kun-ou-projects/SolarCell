@@ -40,9 +40,9 @@ for index, row in dataset.iterrows():
     record = d.records.serialize()
 
     for i in record:
-        if len(i) > 1:
+        if len(i) > 1 and "band_gap" in i.keys():
             cem_bg_info.append(i)
-
+            
     ie.append(cem_bg_info)
 
     print(index)
