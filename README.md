@@ -1,3 +1,5 @@
+Authors: Satanu Ghosh and Dr. Kun Lu
+
 # Band Gap Information Extraction from Material Science Literature
 
 ## data_download.py
