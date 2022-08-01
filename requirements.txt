@@ -1,0 +1,38 @@
+appdirs @ file:///home/conda/feedstock_root/build_artifacts/appdirs_1603108395799/work
+beautifulsoup4 @ file:///home/conda/feedstock_root/build_artifacts/beautifulsoup4_1631087867185/work
+brotlipy @ file:///D:/bld/brotlipy_1636012381660/work
+certifi==2021.10.8
+cffi @ file:///D:/bld/cffi_1636046293990/work
+chardet @ file:///D:/bld/chardet_1635815015676/work
+charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1644853463426/work
+ChemDataExtractor @ file:///home/conda/feedstock_root/build_artifacts/chemdataextractor_1593096878559/work
+click @ file:///D:/bld/click_1645238350348/work
+colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1602866480661/work
+cryptography @ file:///C:/ci/cryptography_1639472366776/work
+cssselect==1.1.0
+DAWG @ file:///D:/bld/dawg_1610373561018/work
+idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1642433548627/work
+joblib @ file:///home/conda/feedstock_root/build_artifacts/joblib_1633637554808/work
+lxml @ file:///D:/bld/lxml_1645125169718/work
+nltk @ file:///home/conda/feedstock_root/build_artifacts/nltk_1640748215808/work
+numpy @ file:///D:/bld/numpy_1643959091469/work
+pandas @ file:///D:/bld/pandas_1631466259165/work
+pdfminer.six @ file:///home/conda/feedstock_root/build_artifacts/pdfminer.six_1634369700996/work
+pycparser @ file:///home/conda/feedstock_root/build_artifacts/pycparser_1636257122734/work
+pyOpenSSL @ file:///home/conda/feedstock_root/build_artifacts/pyopenssl_1643496850550/work
+PySocks @ file:///D:/bld/pysocks_1635862590164/work
+python-crfsuite @ file:///D:/bld/python-crfsuite_1602439938763/work
+python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1626286286081/work
+pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1633452062248/work
+PyYAML @ file:///D:/bld/pyyaml_1636139895442/work
+regex @ file:///D:/bld/regex_1642552059424/work
+requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1641580202195/work
+scikit-learn==1.0.2
+scipy==1.8.0
+six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
+sklearn==0.0
+soupsieve @ file:///home/conda/feedstock_root/build_artifacts/soupsieve_1638550740809/work
+threadpoolctl==3.1.0
+tqdm @ file:///home/conda/feedstock_root/build_artifacts/tqdm_1632160078689/work
+urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1641584929973/work
+win-inet-pton @ file:///D:/bld/win_inet_pton_1635833007271/work
