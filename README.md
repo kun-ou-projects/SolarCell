@@ -24,6 +24,7 @@
    
 </ol>
 
+NOTE: The "data" directory is here with a blank file only to maintain the structure of the project. Please run the code to populate the data directory.
 
 # Brief description of Python scripts
 
