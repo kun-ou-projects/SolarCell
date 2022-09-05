@@ -1,5 +1,5 @@
 # Authors: Satanu Ghosh and Dr. Kun Lu <br>
-## Paper name: Band gap information extraction from materials science literature–a pilot study<br>
+## Paper name: <i>Band gap information extraction from materials science literature–a pilot study</i><br>
 ## Link to paper: https://www.emerald.com/insight/content/doi/10.1108/AJIM-03-2022-0141/full/html
 
 # Pre-requisite:
