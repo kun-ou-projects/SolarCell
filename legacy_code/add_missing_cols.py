@@ -6,11 +6,11 @@ import time
 
 start_time = time.time()
 
-#doi_file = "C:/Users/satan/PycharmProjects/SolarCell/dois/relevant_dois.json"
-data_dir = "C:/Users/satan/PycharmProjects/SolarCell/data/"
+#doi_file = "dois/relevant_dois.json"
+data_dir = "data/"
 db_file = data_dir + "abstracts.db"
-elsevier_api_key = "39e4590618fd80d8b4f89edbec9673d2"
-springer_api_key = "e3224f6e8aa7f7b0c3a2861d02121fa8"
+elsevier_api_key = ""
+springer_api_key = ""
 
 
 def scidirect_api(doi):

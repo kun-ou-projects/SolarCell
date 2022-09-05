@@ -50,4 +50,4 @@
  ### parser_grammar.py
  
  This script contains all the different regex grammars we used to identify a piece of text as bang gap value or specifier. Information extraction to construct the parse tree is being done here.
- 
+
