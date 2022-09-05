@@ -10,8 +10,8 @@ import time
 
 start_time = time.time()
 
-doi_file = "C:/Users/satan/PycharmProjects/SolarCell/dois/relevant_dois.json"
-data_dir = "C:/Users/satan/PycharmProjects/SolarCell/data/"
+doi_file = "dois/relevant_dois.json"
+data_dir = "data/"
 db_file = data_dir + "abstracts.db"
 elsevier_api_key = ""
 springer_api_key = ""
