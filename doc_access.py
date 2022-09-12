@@ -22,7 +22,7 @@ pub_date = []
 journal = []
 ie = []
 
-for index, row in dataset.head().iterrows():
+for index, row in dataset.iterrows():
     cem_bg_info = []
     heading.append(row['title'])
     paragraph.append(row['abstract'])
