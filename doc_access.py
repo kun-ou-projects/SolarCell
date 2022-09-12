@@ -11,7 +11,7 @@ dataset_path = "data/relevant_dataset.csv"
 
 dataset = pd.read_csv(dataset_path)
 # print(dataset.columns)
-op_file = open("data/output_changes.txt", 'a', encoding="utf-8")
+#op_file = open("data/output_changes.txt", 'a', encoding="utf-8")
 
 df = pd.DataFrame(columns=['doi', 'publication_date', 'source', 'journal', 'title', 'abstract', 'info_extracted'])
 doi = []
@@ -22,7 +22,7 @@ pub_date = []
 journal = []
 ie = []
 
-for index, row in dataset.iterrows():
+for index, row in dataset.head().iterrows():
     cem_bg_info = []
     heading.append(row['title'])
     paragraph.append(row['abstract'])
@@ -41,7 +41,8 @@ for index, row in dataset.iterrows():
     record = d.records.serialize()
 
     for i in record:
-        if len(i) > 1 and "band_gap" in i.keys():
+        if "band_gaps" in i.keys():
+            #print(i)
             cem_bg_info.append(i)
 
     ie.append(cem_bg_info)
