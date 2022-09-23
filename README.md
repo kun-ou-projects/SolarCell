@@ -5,13 +5,19 @@
 # Pre-requisite:
 
 <ol>
-    <li> Download the requirements from requirements.txt </li>
-    <li> If you encounter a problem with installing chemdaataextractor then you can use the following commands from your anaconda or miniconda prompt
-        
-        conda config --add channels conda-forge
-        conda install chemdataextractor```
+    <li> Create a conda environment for the project </li>
+    <li> Use the following commands from your anaconda or miniconda prompt to install chemdataextractor:
+        <p><code>conda config --add channels conda-forge</code></p>
+        <p><code>conda install chemdataextractor</code></p>
    </li>
-    
+   <li>dowbload data files for chemdataextractor using:
+   <p><code>cde data download</code></p>
+   
+   </li>
+   <li> navigate to chemdataextractor folder in your site-packages, replace the line 445 in chemdataextractor/nlp/tokenize.py with the following code to add tokenization split for eV unit:
+   <p><code>QUANTITY_RE = re.compile(r'^((\d\d\d)g|([-−]?\d+\.\d+|10[-−]\d+)(g|s|m|N|V)([-−]?[1-4])?|(\d*[-−]?\d+\.?\d*)([pnµμm]A|[µμmk]g|[kM]J|m[lL]|[nµμm]?M|[nµμmc]m|kN|[emk]V|[mkMG]?W|[mnpμµ]s|Hz|[Mm][Oo][Ll](e|ar)?s?|k?Pa|ppm|min)([-−]?[1-4])?)$')</code></p>
+   </li>
+   <li>install other requirements</li>
 </ol>
 
 # How to run?
@@ -24,7 +30,7 @@
    
 </ol>
 
-NOTE: The "data" directory is here with a blank file only to maintain the structure of the project. Please run the code to populate the data directory.
+NOTE: The "data" directory is here with an example file (10 abstracts). Please run the code to populate the data directory.
 
 # Brief description of Python scripts
 
