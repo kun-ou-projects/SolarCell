@@ -5,7 +5,7 @@
 # Pre-requisite:
 
 <ol>
-    <li> Create a conda environment for the project </li>
+    <li> Create a conda environment for the project using Python 3.8 </li>
     <li> Use the following commands from your anaconda or miniconda prompt to install chemdataextractor:
         <p><code>conda config --add channels conda-forge</code></p>
         <p><code>conda install chemdataextractor</code></p>
