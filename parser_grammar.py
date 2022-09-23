@@ -3,7 +3,7 @@ from chemdataextractor.doc import Heading, Paragraph, Title
 from chemdataextractor.model import BaseModel, StringType, ListType, ModelType
 from chemdataextractor.model import Compound
 from lxml import etree
-from chemdataextractor.parse import R, I, W, T, Optional, merge, join, Any, OneOrMore, Not, ZeroOrMore, SkipTo, FollowedBy
+from chemdataextractor.parse import R, I, W, T, Optional, merge, join, Any, OneOrMore, Not, ZeroOrMore, SkipTo
 #from chemdataextractor.elements import I, R, W, T, ZeroOrMore, Optional, Not, Group, End, Start, OneOrMore, Any, FollowedBy
 from chemdataextractor.parse.base import BaseParser
 from chemdataextractor.parse.common import lbrct, dt, rbrct, comma
